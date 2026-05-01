@@ -70,8 +70,8 @@ def steane_encode(qc: QuantumCircuit, data) -> None:
     Encode data[0] into logical qubit across data[0..6].
 
     Protocol (Mermin Ch.7):
-    1. Apply H to data[3], data[4], data[5], data[6]  (these become the
-       |+> superposition qubits that generate the code space)
+    1. Apply H to data[0], data[1], data[3] (these parity bits become the
+       |+> superpositions that generate the code space)
     2. Apply CNOTs from each 'check' qubit to every data qubit in its
        stabilizer group to spread the state.
 
