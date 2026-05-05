@@ -7,7 +7,8 @@ The project has two main ways to use it:
 - `steane_qec.ipynb`: a standalone notebook demo for quick presentation or walkthrough.
 - `steane_demo.py` + `steane_gui.py`: a reusable Python simulator and GUI for interactive testing.
 
-![Example GUI circuit output](gui_circuit.png)
+<img width="1337" height="896" alt="image" src="https://github.com/user-attachments/assets/8c25f406-902b-4815-8a0f-d47d4c5ef538" />
+
 
 ## What This Demonstrates
 
