@@ -1,8 +1,9 @@
 import customtkinter as ctk
 from PIL import Image
 import os
-import sys
 import shutil
+
+# GUI implementation polished with assistance from Anthropic.
 
 # Ensure matplotlib backend doesn't try to open a window
 import matplotlib
@@ -61,6 +62,7 @@ class SteaneApp(ctk.CTk):
             self.sidebar_frame, 
             text="Apply Continuous Random\nUnitary (Instead of Pauli)", 
             variable=self.rand_u_var,
+            command=self.toggle_random_unitary,
             font=ctk.CTkFont(weight="bold")
         )
         self.rand_u_checkbox.grid(row=8, column=0, padx=20, pady=20, sticky="w")
@@ -93,6 +95,12 @@ class SteaneApp(ctk.CTk):
         self.image_label = ctk.CTkLabel(self.image_frame, text="")
         self.image_label.pack(expand=True, fill="both", padx=10, pady=10)
 
+    def toggle_random_unitary(self):
+        if self.rand_u_var.get():
+            self.error_dropdown.configure(state="disabled")
+        else:
+            self.error_dropdown.configure(state="normal")
+
     def run_simulation(self):
         # Disable button while running
         self.run_button.configure(state="disabled", text="Running...")
@@ -112,6 +120,7 @@ class SteaneApp(ctk.CTk):
             data0_1 = result["data0_prob_1"]
             syn_x = result["syn_x_val"]
             syn_z = result["syn_z_val"]
+            syndrome_distribution = result["syndrome_distribution"]
             correct = result["correct"]
             qc = result["circuit"]
             
@@ -147,6 +156,12 @@ class SteaneApp(ctk.CTk):
             msg += f"Injected Error       : {'Continuous Random Unitary' if rand_u else error} on data[{qubit}]\n\n"
             msg += f"Measured X-Syndrome (detects X-errors): {syn_x:03b}  -->  Corrected qubit {q_x if q_x >= 0 else 'None'}\n"
             msg += f"Measured Z-Syndrome (detects Z-errors): {syn_z:03b}  -->  Corrected qubit {q_z if q_z >= 0 else 'None'}\n\n"
+            if rand_u:
+                msg += "Random unitary syndrome branches:\n"
+                total_branch_shots = sum(syndrome_distribution.values())
+                for (x_val, z_val), shots in sorted(syndrome_distribution.items(), key=lambda item: item[1], reverse=True):
+                    msg += f"  X={x_val:03b}, Z={z_val:03b}: {shots / total_branch_shots:.3f}\n"
+                msg += "\n"
             msg += f"Final decoded data[0] probabilities:  P(|0>) = {data0_0:.4f}  |  P(|1>) = {data0_1:.4f}\n\n"
             msg += f"Error Correction Status: {status}"
             

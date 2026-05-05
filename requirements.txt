@@ -1,2 +1,7 @@
 qiskit
+qiskit-aer
 numpy
+customtkinter
+pillow
+matplotlib
+pylatexenc
